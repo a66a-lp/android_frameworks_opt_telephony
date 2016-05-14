@@ -1573,18 +1573,16 @@ public class GSMPhone extends PhoneBase {
 
         if (found != null) {
             // Complete pending USSD
-            /* M: SS part */
-            //For ALPS01471897
-            Rlog.d(LOG_TAG, "setUserInitiatedMMI  TRUE");
-            found.setUserInitiatedMMI(true);
-            /* M: SS part end */
-            if (isUssdRelease && mIsNetworkInitiatedUssd) {
-                Rlog.d(LOG_TAG, "onIncomingUSSD(): USSD_MODE_NW_RELEASE.");
-                found.onUssdRelease();
+            
+			if (isUssdRelease) {
+                // MTK weirdness
+                if(ussdMessage != null) {
+                    found.onUssdFinished(ussdMessage, isUssdRequest);
+                } else {
+                    found.onUssdRelease();
+                }
             } else if (isUssdError) {
                 found.onUssdFinishedError();
-            } else if (isUssdhandleByStk) {
-                found.onUssdStkHandling(ussdMessage, isUssdRequest);
             } else {
                 found.onUssdFinished(ussdMessage, isUssdRequest);
             }
